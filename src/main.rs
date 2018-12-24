@@ -1,8 +1,8 @@
 //#![feature(trace_macros)]
 //trace_macros!(true);
 
-use ccsrs::{Program, Process, parser::Parser};
-//use ccsrs::macros::*;
+use libccsrs::{Program, Process, parser::Parser};
+//use libccsrs::macros::*;
 
 use getopts::Options;
 

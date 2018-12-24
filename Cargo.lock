@@ -8,6 +8,7 @@ name = "ccsrs"
 version = "0.1.0"
 dependencies = [
  "getopts 0.2.18 (registry+https://github.com/rust-lang/crates.io-index)",
+ "libccsrs 0.1.0",
  "rand 0.6.1 (registry+https://github.com/rust-lang/crates.io-index)",
 ]
 
@@ -45,6 +46,10 @@ dependencies = [
 name = "libc"
 version = "0.2.45"
 source = "registry+https://github.com/rust-lang/crates.io-index"
+
+[[package]]
+name = "libccsrs"
+version = "0.1.0"
 
 [[package]]
 name = "rand"

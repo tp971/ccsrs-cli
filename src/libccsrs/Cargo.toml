@@ -1,10 +1,9 @@
 [package]
-name = "ccsrs"
+name = "libccsrs"
 version = "0.1.0"
 authors = ["Yannick Schillo <yschillo@yansonline.de>"]
 edition = "2018"
 
-[dependencies]
-libccsrs = { path = "src/libccsrs" }
-getopts = "0.2"
-rand = "0.6"
+[lib]
+name = "libccsrs"
+path = "src/lib.rs"
