@@ -1,8 +1,8 @@
 //#![feature(trace_macros)]
 //trace_macros!(true);
 
-use ccsrs::{Program, Process, parser::Parser};
-//use ccsrs::macros::*;
+use ccsrs::ccs::{Program, Process};
+use ccsrs::parser::Parser;
 
 use getopts::Options;
 
@@ -13,7 +13,7 @@ use std::env;
 use std::fs::File;
 use std::io::{self, prelude::*, BufReader};
 use std::process;
-use std::rc::Rc;
+use std::sync::Arc;
 use std::time::Instant;
 
 enum Command {
@@ -119,7 +119,7 @@ fn main() {
         if matches.free.len() >= 2 {
             match File::open(&matches.free[1]) {
                 Ok(f) =>
-                    Parser::new(matches.free[1].clone(), BufReader::new(f).bytes())
+                    Parser::new(BufReader::new(f).bytes())
                         .parse_program(),
                 Err(e) => {
                     eprintln!("ccsrs: Cannot open file {}: {}", &matches.free[1], e);
@@ -127,7 +127,7 @@ fn main() {
                 }
             }
         } else {
-            Parser::new("stdin".to_string(), io::stdin().bytes())
+            Parser::new(io::stdin().bytes())
                 .parse_program()
         };
 
@@ -151,7 +151,7 @@ fn main() {
 
 }
 
-fn print_node(args: &Args, id: usize, p: &Rc<Process>, error: bool, explored: bool, term: bool) {
+fn print_node(args: &Args, id: usize, p: &Arc<Process>, error: bool, explored: bool, term: bool) {
     if args.omit_names {
         print!("    p{} [label=\"\"", id);
     } else {
@@ -178,7 +178,7 @@ fn cmd_graph(args: &Args, program: &Program) -> i32 {
     let mut nodes = HashMap::new();
     let mut q = HashSet::new();
     let start = program.process().unwrap();
-    nodes.insert(Rc::clone(&start), 0);
+    nodes.insert(Arc::clone(&start), 0);
     q.insert(start);
 
     let t_start = Instant::now();
@@ -205,10 +205,10 @@ fn cmd_graph(args: &Args, program: &Program) -> i32 {
                     n_trans += trans.len();
                     for tr in trans {
                         let id_next = nodes.len();
-                        let id2 = match nodes.entry(Rc::clone(&tr.to)) {
+                        let id2 = match nodes.entry(Arc::clone(&tr.to)) {
                             Entry::Occupied(v) => *v.get(),
                             Entry::Vacant(v) => {
-                                q.insert(Rc::clone(&tr.to));
+                                q.insert(Arc::clone(&tr.to));
                                 *v.insert(id_next)
                             }
                         };
